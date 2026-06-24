@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kimeltun: Plataforma Educativa de Mapudungun</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Segoe UI', Arial, sans-serif; background-color: #faf8f5; color: #3c4043; padding: 20px; display: flex; justify-content: center; }
+        .main-container { width: 100%; max-width: 900px; background: white; border: 1px solid #dadce0; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); overflow: hidden; }
+        
+        /* Banner Principal */
+        .banner { background: linear-gradient(135deg, #137333, #0f5226); color: white; padding: 30px; text-align: center; }
+        .banner h1 { font-size: 28px; margin-bottom: 8px; }
+        .banner p { font-size: 16px; opacity: 0.9; }
+
+        /* Menú de Navegación */
+        .nav-tabs { display: flex; background: #f8f9fa; border-bottom: 1px solid #dadce0; overflow-x: auto; }
+        .tab-btn { flex: 1; padding: 15px 20px; border: none; background: none; font-size: 15px; font-weight: 600; color: #5f6368; cursor: pointer; text-align: center; white-space: nowrap; transition: all 0.2s; }
+        .tab-btn:hover { background: #f1f3f4; color: #137333; }
+        .tab-btn.active { color: #137333; border-bottom: 3px solid #137333; background: white; }
+
+        /* Contenido de las Secciones */
+        .content-section { padding: 30px; display: none; }
+        .content-section.active { display: block; }
+
+        /* Estilos del Traductor */
+        .header-langs { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #f1f3f4; padding-bottom: 12px; margin-bottom: 15px; font-weight: 600; color: #1a73e8; font-size: 15px; }
+        .lang-label { background: #e8f0fe; padding: 6px 12px; border-radius: 20px; }
+        .boxes { display: flex; flex-direction: column; gap: 15px; }
+        @media (min-width: 600px) { .boxes { flex-direction: row; } }
+        .box { flex: 1; display: flex; flex-direction: column; }
+        textarea, .output-box { width: 100%; height: 150px; padding: 15px; border: 1px solid #dadce0; border-radius: 8px; font-size: 18px; resize: none; font-family: inherit; }
+        textarea:focus { border-color: #1a73e8; outline: none; box-shadow: 0 0 0 2px rgba(26,115,232,0.2); }
+        .output-box { background-color: #f8f9fa; color: #3c4043; font-weight: 500; overflow-y: auto; }
+        .note { margin-top: 12px; padding: 12px; background-color: #f1f3f4; border-left: 4px solid #137333; border-radius: 4px; font-size: 14px; display: none; }
+
+        /* Estilos de las Lecciones y Cultura */
+        h2 { color: #137333; margin-bottom: 15px; font-size: 22px; }
+        p.intro { margin-bottom: 20px; line-height: 1.6; color: #5f6368; }
+        .grid-cards { display: grid; grid-template-columns: 1fr; gap: 15px; margin-top: 20px; }
+        @media (min-width: 600px) { .grid-cards { grid-template-columns: 1fr 1fr; } }
+        .card { background: #f8f9fa; border: 1px solid #dadce0; border-radius: 8px; padding: 20px; border-top: 4px solid #137333; }
+        .card h3 { font-size: 18px; margin-bottom: 8px; color: #202124; }
+        .card p { font-size: 14px; line-height: 1.5; color: #5f6368; }
+        .highlight { background: #e6f4ea; color: #137333; padding: 2px 6px; border-radius: 4px; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<div class="main-container">
+    <!-- Banner -->
+    <div class="banner">
+        <h1>Kimeltun (Aprender y Enseñar)</h1>
+        <p>Espacio interactivo para descubrir la riqueza lingüística y cultural del Mapudungun</p>
+    </div>
+
+    <!-- Menú de Pestañas -->
+    <div class="nav-tabs">
+        <button class="tab-btn active" onclick="cambiarPestaña(event, 'traductor')">Traductor</button>
+        <button class="tab-btn" onclick="cambiarPestaña(event, 'lecciones')">Estructura Gramatical</button>
+        <button class="tab-btn" onclick="cambiarPestaña(event, 'cultura')">Biblioteca Cultural</button>
+        <button class="tab-btn" onclick="cambiarPestaña(event, 'saludos')">Saludos y Pronunciación</button>
+    </div>
+
+    <!-- SECCIÓN 1: TRADUCTOR -->
+    <div id="traductor" class="content-section active">
+        <div class="header-langs">
+            <span class="lang-label">Español</span>
+            <span style="color: #5f6368; font-size: 18px;">⇄</span>
+            <span class="lang-label" style="color: #137333; background: #e6f4ea;">Mapudungun</span>
+        </div>
+        <div class="boxes">
+            <div class="box">
+                <textarea id="inputTexto" placeholder="Escribe un concepto básico o derivado... (ej: Humedal, Tomar agua, Hermano)"></textarea>
+            </div>
+            <div class="box">
+                <div id="outputTexto" class="output-box">Traducción...</div>
+            </div>
+        </div>
+        <div id="usoNota" class="note"></div>
+    </div>
+
+    <!-- SECCIÓN 2: LECCIONES -->
+    <div id="lecciones" class="content-section">
+        <h2>La Magia de los Sufijos (Polisíntesis)</h2>
+        <p class="intro">El Mapudungun es un idioma aglutinante. En lugar de memorizar miles de palabras sueltas, utiliza raíces sólidas a las que se les añaden terminaciones al final para transformar por completo su significado o convertirlas en verbos complejos.</p>
+        
+        <div class="grid-cards">
+            <div class="card">
+                <h3>Raíz Base: <span class="highlight">Ko</span> (Agua)</h3>
+                <p>Mira cómo evoluciona al agregar sufijos de acción:</p>
+                <p style="margin-top: 8px;">• <strong>Kotun</strong>: Pasar a la acción de beber o tomar agua.</p>
+                <p>• <strong>Kolekan</strong>: Estar provisto o tener agua en el entorno.</p>
+                <p>• <strong>Komentun</strong>: La acción física de extraer agua de una fuente.</p>
+            </div>
+            <div class="card">
+                <h3>Raíz Base: <span class="highlight">Küme</span> (Bien/Bueno)</h3>
+                <p>Transformación hacia el bienestar individual y colectivo:</p>
+                <p style="margin-top: 8px;">• <strong>Kümelen</strong>: Estar en un estado de balance armónico.</p>
+                <p>• <strong>Kümelekan</strong>: Sentirse bien físicamente.</p>
+                <p>• <strong>Kümeel</strong>: Ejecutar o hacer algo de forma correcta.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- SECCIÓN 3: CULTURA -->
+    <div id="cultura" class="content-section">
+        <h2>Cosmovisión y Sabiduría Ancestral</h2>
+        <p class="intro">Para entender el idioma es fundamental conocer los pilares de su cultura. Los conceptos no son solo traducciones literales, encierran toda una filosofía de vida.</p>
+        
+        <div class="grid-cards">
+            <div class="card">
+                <h3>Ngülam (El Consejo)</h3>
+                <p>Orientaciones éticas, filosóficas y de vida que los mayores transmiten formalmente a las nuevas generaciones para mantener el respeto y la rectitud.</p>
+            </div>
+            <div class="card">
+                <h3>Az Mapu (Leyes de la Naturaleza)</h3>
+                <p>El conjunto de códigos estéticos, morales y espirituales que dictan cómo los seres humanos deben convivir en perfecto equilibrio con el entorno natural.</p>
+            </div>
+            <div class="card">
+                <h3>Epew (Relatos Didácticos)</h3>
+                <p>Cuentos tradicionales orales —protagonizados frecuentemente por animales astutos como el zorro (Ngürü)— diseñados para enseñar valores a los niños.</p>
+            </div>
+            <div class="card">
+                <h3>Menoko (Humedales Sagrados)</h3>
+                <p>Espacios sagrados donde brota agua viva y donde abunda el <em>Lawen</em> (medicina botánica nativa). Son zonas de profundo respeto y resguardo natural.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- SECCIÓN 4: SALUDOS -->
+    <div id="saludos" class="content-section">
+        <h2>Guía de Saludos y Trato Comunitario</h2>
+        <p class="intro">Aprende los términos esenciales para interactuar con respeto dentro del protocolo comunitario.</p>
+        
+        <div class="grid-cards">
+            <div class="card">
+                <h3>Mari mari</h3>
+                <p>El saludo universal. Tradicionalmente se asocia al conteo de los diez dedos de las manos al estrecharse en señal de apertura completa y paz.</p>
+            </div>
+            <div class="card">
+                <h3>¡Mari mari, kom pu che!</h3>
+                <p>La fórmula ideal para iniciar un discurso, reunión o presentación. Significa literalmente: <em>"¡Hola a todas y todos!"</em>.</p>
+            </div>
+            <div class="card">
+                <h3>Peñi y Lamngen</h3>
+                <p>• <strong>Peñi</strong>: Trato de "hermano" usado exclusivamente entre hombres.</p>
+                <p>• <strong>Lamngen</strong>: Trato de "hermana" usado entre mujeres, o de un hombre hacia una mujer en señal de profundo respeto recíproco.</p>
+            </div>
+            <div class="card">
+                <h3>Chaltumay / Pewkayall</h3>
+                <p>• <strong>Chaltumay</strong>: Expresión para dar un profundo agradecimiento.</p>
+                <p>• <strong>Pewkayall</strong>: Despedida esperanzadora equivalente a "hasta que nos volvamos a ver".</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Sistema de navegación de pestañas
+    function cambiarPestaña(evt, pestañaId) {
+        const sections = document.querySelectorAll('.content-section');
+        const buttons = document.querySelectorAll('.tab-btn');
+        
+        sections.forEach(sec => sec.classList.remove('active'));
+        buttons.forEach(btn => btn.classList.remove('active'));
+        
+        document.getElementById(pestañaId).classList.add('active');
+        evt.currentTarget.classList.add('active');
+    }
+
+    // Base de datos integrada del traductor
+    const diccionario = {
+        "hola": { trad: "Mari mari", nota: "Saludo universal e introductorio para cualquier ocasión." },
+        "todos": { trad: "Kom pu che", nota: "Se usa para dirigirse de forma colectiva a un grupo de personas." },
+        "todas": { trad: "Kom pu che", nota: "Se usa para dirigirse de forma colectiva a un grupo de personas." },
+        "bienvenido": { trad: "Amulepe / Küme akun", nota: "Amulepe significa literalmente 'que continúe' o 'vayan adelante'." },
+        "bienvenida": { trad: "Amulepe / Küme akun", nota: "Amulepe denota continuidad en el avance de los procesos." },
+        "saludos": { trad: "Chalin", nota: "Término general para la acción respetuosa de saludar." },
+        "saludo": { trad: "Chalin", nota: "Término general para el acto de saludar." },
+        "como estas": { trad: "Küme tünteyipuy?", nota: "Pregunta directa para consultar el estado integral de una persona." },
+        "estoy bien": { trad: "Kümelekan", nota: "Respuesta común para indicar bienestar físico y espiritual." },
+        "bien": { trad: "Küme", nota: "Adjetivo positivo para denotar que algo se encuentra en buen estado." },
+        "bueno": { trad: "Küme", nota: "Adjetivo positivo general." },
+        "gracias": { trad: "Chaltumay / Chaltu", nota: "Expresión de profundo agradecimiento comunitario." },
+        "adios": { trad: "Pewkayall", nota: "Despedida tradicional equivalente a 'nos vemos' o 'hasta que nos encontremos'." },
+        "chao": { trad: "Pewkayall", nota: "Despedida de uso diario." },
+        "madre": { trad: "Ñuke", nota: "Término afectuoso y de respeto por el origen de la vida y la tierra." },
+        "mama": { trad: "Ñuke", nota: "Término familiar cercano para la madre." },
+        "padre": { trad: "Chao / Chachai", nota: "Chachai denota también un matiz de cariño hacia hombres mayores." },
+        "papa": { trad: "Chao / Chachai", nota: "Término familiar para el padre." },
+        "abuela": { trad: "Kuku (paterna) / Chuchu (materna)", nota: "Distingue el origen familiar por vía materna o paterna." },
+        "abuelo": { trad: "Laku (paterno) / Cheche (materno)", nota: "Distingue el origen familiar por vía materna o paterna." },
+        "hijo": { trad: "Fotüm", nota: "Usado tradicionalmente por el padre hacia su hijo varón." },
+        "hija": { trad: "Ñaw", nota: "Usado tradicionalmente por el padre hacia su hija." },
+        "hermano": { trad: "Peñi", nota: "Trato fraterno y de gran respeto utilizado exclusivamente de hombre a hombre." },
+        "hermana": { trad: "Lamngen", nota: "Trato entre mujeres, o de un hombre hacia una mujer en señal de respeto." },
+        "persona": { trad: "Che", nota: "Base del ser individual y comunitario." },
+        "gente": { trad: "Che", nota: "La comunidad asociada a la identidad de un territorio." },
+        "amigo": { trad: "Wenüy", nota: "Término común para designar a un compañero o amistad." },
+        "amiga": { trad: "Wenüy", nota: "Término común para designar a una amistad." },
+        "gato": { trad: "Ñarki", nota: "Felino doméstico de compañía." },
+        "perro": { trad: "Trewa", nota: "Históricamente el guardián del espacio familiar de la ruka." },
+        "caballo": { trad: "Kawellu", nota: "Adaptación e incorporación fonética tras el contacto lingüístico." },
+        "ave": { trad: "Üñüm", nota: "Término genérico para designar a las aves." },
+        "pajaro": { trad: "Üñüm", nota: "Término genérico para designar a los pájaros." },
+        "condor": { trad: "Mañke", nota: "Ave sagrada que habita y resguarda las altas cumbres." },
+        "puma": { trad: "Pangui / Trapial", nota: "Gran felino nativo protector del bosque denso." },
+        "zorro": { trad: "Ngürü", nota: "Elemento clave, sabio y astuto en la cuentística de los epew." },
+        "ballena": { trad: "Yene", nota: "Mamífero de alta relevancia cosmológica para el mundo costero lafquenche." },
+        "buho": { trad: "Chuchu", nota: "Ave de hábitos nocturnos presente en la tradición oral." },
+        "chucho": { trad: "Chuchu", nota: "Ave nocturna vinculada a relatos locales." },
+        "pez": { trad: "Challwa", nota: "Término general aplicable a la fauna acuática de ríos o mar." },
+        "pescado": { trad: "Challwa", nota: "Término aplicable a la fauna acuática." },
+        "insecto": { trad: "Meru", nota: "Asociado comúnmente a moscas y pequeños insectos voladores." },
+        "mosca": { trad: "Meru", nota: "Asociado comúnmente a moscas." },
+        "tierra": { trad: "Mapu", nota: "Espacio holístico donde coexisten la vida física, cultural y espiritual." },
+        "territorio": { trad: "Mapu", nota: "Concepto que arraiga de manera profunda la identidad de la gente." },
+        "agua": { trad: "Ko", nota: "Elemento primordial, sagrado y dador de toda vida vegetal y animal." },
+        "agua de mar": { trad: "Lafken-ko", nota: "Composición literal: agua proveniente de la gran extensión marina." },
+        "humedal": { trad: "Menoko", nota: "Lugar protegido y sagrado donde brota agua estancada rica en medicina natural." },
+        "sol": { trad: "Antü", nota: "Principal energía visible, dadora de calor, luz y marcador del ciclo diario." },
+        "luna": { trad: "Küyen", nota: "Reguladora de las mareas, ciclos agrícolas, fases rituales y fertilidad." },
+        "estrella": { trad: "Wanglen", nota: "Luces nocturnas presentes en el origen de los relatos de creación." },
+        "rio": { trad: "Leufü", nota: "Arteria fluvial dulce que recorre y nutre las tierras habitadas." },
+        "mar": { trad: "Lafken", nota: "Gran cuerpo de agua salada que define la identidad lafquenche." },
+        "bosque": { trad: "Mawida", nota: "Selva lluviosa, monte denso o territorio de vegetación en altura." },
+        "montaña": { trad: "Mawida", nota: "Territorio de vegetación nativa cordillerana." },
+        "cerro": { trad: "Mahuida / Winka", nota: "Elevaciones geográficas naturales del relieve." },
+        "arbol": { trad: "Aliwen", nota: "Se refiere solemnemente a un árbol antiguo, robusto o sagrado." },
+        "lluvia": { trad: "Mawün", nota: "Ciclo indispensable del clima sureño para la siembra." },
+        "viento": { trad: "Kürüf", nota: "El aire dinámico que limpia el territorio y transporta energías." },
+        "fuego": { trad: "Kütral", nota: "El centro sagrado del hogar en la ruka, donde se genera la conversación." },
+        "piedra": { trad: "Kura", nota: "Soporte material macizo y mineral de la geografía terrestre." },
+        "oro": { trad: "Millan", nota: "Elemento metalúrgico común en apellidos tradicionales." },
+        "relatos": { trad: "Epew", nota: "Cuentos didácticos para la transmisión de valores éticos a los niños." },
+        "relato": { trad: "Epew", nota: "Cuento didáctico oral tradicional." },
+        "consejo": { trad: "Ngülam", nota: "Consejo formal, ético y filosófico entregado por los mayores." },
+        "consejos": { trad: "Ngülam", nota: "Consejos formales y filosóficos de vida tradicionales." },
+        "armonia": { trad: "Kümelen / Az Mapu", nota: "Kümelen es estar bien. El Az Mapu rige las leyes naturales para mantener esta armonía." },
+        "equilibrio": { trad: "Kümelen", nota: "Estado óptimo de armonía entre la comunidad y las fuerzas de la tierra." },
+        "casa": { trad: "Ruka", nota: "Construcción habitacional tradicional construida con elementos orgánicos." },
+        "hogar": { trad: "Ruka", nota: "Espacio de resguardo de la familia." },
+        "comida": { trad: "Iyael", nota: "Toda sustancia alimenticia destinada al sustento diario." },
+        "alimento": { trad: "Iyael", nota: "Toda sustancia alimenticia destinada al sustento." },
+        "pan": { trad: "Kofke", nota: "Alimento cocido esencial en la gastronomía cotidiana." },
+        "remedio": { trad: "Lawen", nota: "Propiedades botánicas curativas que la naturaleza otorga para sanar." },
+        "medicina": { trad: "Lawen", nota: "Propiedades curativas de la biodiversidad local para sanar cuerpo y alma." },
+        "hablar": { trad: "Dungun", nota: "Acción expresiva verbal, articulación fonética o lenguaje." },
+        "idioma": { trad: "Dungun", nota: "El código lingüístico propio de una identidad cultural (ej. Mapudungun)." },
+        "cantar": { trad: "Ülkantun", nota: "Expresión musical y poética de carácter lírico o festivo." },
+        "trabajar": { trad: "Küdawün", nota: "Labor transformadora, esfuerzo físico o quehacer diario productivo." },
+        "estudiar": { trad: "Kimeltun", nota: "Proceso mutuo de enseñanza-aprendizaje y transmisión sistemática." },
+        "aprender": { trad: "Kimeltun", nota: "Internalización de nuevos saberes o habilidades prácticas." },
+        "jugar": { trad: "Awkan", nota: "Acción recreativa o deportiva de interacción grupal libre." },
+        "dormir": { trad: "Umaqtun", nota: "Reposo biológico indispensable durante el ciclo nocturno." },
+        "tomar agua": { trad: "Kotun", nota: "Derivación verbal de 'Ko' (agua). Significa beber o tomar agua." },
+        "beber agua": { trad: "Kotun", nota: "Derivación verbal de 'Ko' (agua). Significa beber o tomar agua." },
+        "tener agua": { trad: "Kolekan", nota: "Sufijo '-lekan' aplicado a 'Ko'. Significa estar provisto o tener agua." },
+        "estar con agua": { trad: "Kolekan", nota: "Sufijo '-lekan' aplicado a 'Ko'. Significa estar provisto o tener agua." },
+        "sacar agua": { trad: "Komentun", nota: "Acción de extraer agua de un pozo, río o vertiente." },
+        "aguar": { trad: "Konlu", nota: "El acto de licuar, aguar o disolver una sustancia usando agua." },
+        "licuar": { trad: "Konlu", nota: "El acto de licuar o diluir usando agua." },
+        "estar bien": { trad: "Kümelen", nota: "Derivación de 'Küme' (bien) + sufijo verbal. Significa estar en balance armónico." },
+        "hacer bien": { trad: "Kümeel", nota: "Verbalización que denota realizar una tarea de manera correcta y positiva." }
+    };
+
+    const input = document.getElementById('inputTexto');
+    const output = document.getElementById('outputTexto');
+    const nota = document.getElementById('usoNota');
+
+    function limpiarTexto(texto) {
+        return texto.trim()
+            .toLowerCase()
+            .normalize("NFD")
+            .replace(/[\u0300-\u036f]/g, ""); // Remueve tildes dinámicamente
+    }
+
+    input.addEventListener('input', () => {
+        const palabra = limpiarTexto(input.value);
+        
+        if (palabra === "") {
+            output.textContent = "Traducción...";
+            nota.style.display = "none";
+            return;
+        }
+
+        if (diccionario[palabra]) {
+            output.textContent = diccionario[palabra].trad;
+            nota.textContent = "Contexto: " + diccionario[palabra].nota;
+            nota.style.display = "block";
+        } else {
+            output.textContent = "Palabra no encontrada";
+            nota.textContent = "Sugerencia: Prueba buscando conceptos básicos o derivados mapeados.";
+            nota.style.display = "block";
+        }
+    });
+</script>
+
+</body>
+</html>
